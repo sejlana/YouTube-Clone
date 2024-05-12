@@ -1,25 +1,49 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { ThemeProvider, createTheme } from '@mui/material/styles'
+import { Box } from '@mui/material'
+import {
+  Navbar,
+  Feed,
+  VideoDetail,
+  ChannelDetail,
+  SearchFeed,
+} from './components'
 
-function App() {
+const App = () => {
+  const [darkMode, setDarkMode] = useState(false)
+
+  const darkTheme = createTheme({
+    palette: {
+      mode: 'dark',
+    },
+  })
+
+  const lightTheme = createTheme({
+    palette: {
+      mode: 'light',
+    },
+  })
+
+  const toggleDarkMode = () => {
+    setDarkMode((prevMode) => !prevMode)
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
+      <BrowserRouter>
+        <Box sx={{ backgroundColor: darkMode ? '#121212' : '#ffffff' }}>
+          <Navbar toggleDarkMode={toggleDarkMode} darkMode={darkMode} />
+          <Routes>
+            <Route path="/" exact element={<Feed />} />
+            <Route path="/video/:id" element={<VideoDetail />} />
+            <Route path="/channel/:id" element={<ChannelDetail />} />
+            <Route path="/search/:searchTerm" element={<SearchFeed />} />
+          </Routes>
+        </Box>
+      </BrowserRouter>
+    </ThemeProvider>
+  )
 }
 
-export default App;
+export default App
